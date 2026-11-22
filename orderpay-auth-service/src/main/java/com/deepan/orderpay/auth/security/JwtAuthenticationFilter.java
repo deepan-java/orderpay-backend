@@ -44,6 +44,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
 
             } catch (InvalidTokenException e) {
+                request.setAttribute(
+                        ApiAuthenticationEntryPoint.INVALID_TOKEN_ATTRIBUTE,
+                        Boolean.TRUE
+                );
+
                 SecurityContextHolder.clearContext();
             }
         }

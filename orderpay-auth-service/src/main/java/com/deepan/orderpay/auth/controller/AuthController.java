@@ -1,6 +1,8 @@
 package com.deepan.orderpay.auth.controller;
 
 import com.deepan.orderpay.auth.dto.*;
+import com.deepan.orderpay.auth.security.AuthenticatedUser;
+import com.deepan.orderpay.auth.service.AccountService;
 import com.deepan.orderpay.auth.service.LoginService;
 import com.deepan.orderpay.auth.service.UserService;
 import jakarta.validation.Valid;
@@ -8,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +23,7 @@ public class AuthController {
 
     private final UserService userService;
     private final LoginService loginService;
+    private final AccountService accountService;
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -65,6 +69,19 @@ public class AuthController {
             @Valid @RequestBody RefreshRequest request
     ) {
         loginService.logout(request.refreshToken());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/logout-all")
+    public ResponseEntity<Void> logoutAll(@AuthenticationPrincipal AuthenticatedUser principal) {
+        accountService.logoutAll(principal.userId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal AuthenticatedUser principal,
+                                               @Valid @RequestBody ChangePasswordRequest request) {
+        accountService.changePassword(principal.userId(), request);
         return ResponseEntity.noContent().build();
     }
 

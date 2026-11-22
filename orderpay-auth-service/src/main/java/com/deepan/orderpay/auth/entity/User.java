@@ -45,6 +45,10 @@ public class User extends BaseEntity {
         this.roles = new HashSet<>(roles);
     }
 
+    public void changePassword(String newPasswordHash) {
+        this.passwordHash = newPasswordHash;
+    }
+
     public void disable() {
         this.enabled = false;
     }

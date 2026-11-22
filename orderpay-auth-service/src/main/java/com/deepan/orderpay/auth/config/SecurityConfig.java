@@ -1,6 +1,8 @@
 package com.deepan.orderpay.auth.config;
 
 
+import com.deepan.orderpay.auth.security.ApiAccessDeniedHandler;
+import com.deepan.orderpay.auth.security.ApiAuthenticationEntryPoint;
 import com.deepan.orderpay.auth.security.JwtAuthenticationFilter;
 import com.deepan.orderpay.auth.security.JwtService;
 import org.springframework.context.annotation.Bean;
@@ -35,18 +37,39 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtService jwtService) throws Exception {
+    public SecurityFilterChain filterChain(
+            HttpSecurity http,
+            JwtService jwtService,
+            ApiAuthenticationEntryPoint entryPoint,
+            ApiAccessDeniedHandler accessDeniedHandler
+    ) throws Exception {
+
         http
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                .sessionManagement(s ->
+                        s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint(entryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/logout").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
+                        .anyRequest().authenticated()
+                )
+
+                .addFilterBefore(
+                        new JwtAuthenticationFilter(jwtService),
+                        UsernamePasswordAuthenticationFilter.class
+                );
+
         return http.build();
     }
 }
