@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: orderpay-auth-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/orderpay_auth
+    username: postgres
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+server:
+  port: 8082
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+      issuer: orderpay-auth-service
+      access-token-ttl: 15m
+
+    refresh-token:
+      ttl: 14d

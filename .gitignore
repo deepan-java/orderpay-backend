@@ -1,0 +1,19 @@
+
+# IntelliJ
+.idea/
+*.iml
+
+# Maven generated files
+**/target/
+
+# Logs
+*.log
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local configuration
+application-local.yml
+application-local.yaml
