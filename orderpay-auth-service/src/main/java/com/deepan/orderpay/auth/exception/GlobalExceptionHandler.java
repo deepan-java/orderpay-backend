@@ -145,4 +145,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleInvalidPasswordChange(InvalidPasswordChangeException ex, HttpServletRequest request) {
         return build(HttpStatus.BAD_REQUEST, ex.getErrorCode(), ex.getMessage(), request, null);
     }
+
+    @ExceptionHandler(RoleChangeConflictException.class)
+    public ResponseEntity<ApiError> handleRoleChangeConflict(RoleChangeConflictException ex, HttpServletRequest request) {
+        return build(HttpStatus.CONFLICT, ex.getErrorCode(), ex.getMessage(), request, null);
+    }
 }

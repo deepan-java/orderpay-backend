@@ -52,4 +52,20 @@ public class User extends BaseEntity {
     public void disable() {
         this.enabled = false;
     }
+
+    public void updateFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public boolean hasRole(Role role) {
+        return roles.contains(role);
+    }
+
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        roles.remove(role);
+    }
 }
