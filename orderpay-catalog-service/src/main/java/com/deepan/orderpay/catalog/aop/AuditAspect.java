@@ -9,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -51,6 +54,11 @@ public class AuditAspect {
     }
 
     private String currentUser() {
-        return "anonymous";        // week 5: read it from the Spring Security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+            return "anonymous";
+        }
+        return ArgSummary.truncate(authentication.getName(), 100);        // for a JWT this is the subject: the user id
     }
 }

@@ -32,9 +32,20 @@ spring:
 #    enabled: false
 
 app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+      issuer: orderpay-auth-service
   aop:
     slow-threshold-ms: 150
 
 logging:
   level:
     com.deepan.orderpay.catalog.aop: DEBUG
+
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
